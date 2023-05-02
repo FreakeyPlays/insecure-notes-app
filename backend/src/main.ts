@@ -8,6 +8,7 @@ async function bootstrap() {
   const config: ConfigService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
 
   await app.listen(config.get<string>('BACKEND_PORT') || 3000);
 }

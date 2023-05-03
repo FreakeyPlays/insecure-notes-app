@@ -12,8 +12,8 @@ export class UsersController {
   }
 
   @Post('login')
-  login(@Body() dto: LoginUserDto) {
-    return this.usersService.login(dto);
+  async login(@Body() dto: LoginUserDto) {
+    return (await this.usersService.login(dto))[0];
   }
 
   @Get('/:id')

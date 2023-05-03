@@ -17,7 +17,7 @@ export class UsersService {
   login(dto: LoginUserDto) {
     return this.userRepository.query(
       `SELECT * FROM users WHERE email = '${dto.email}' AND password = '${dto.password}' LIMIT 1`,
-    )[0];
+    );
   }
 
   getUserById(id: number) {

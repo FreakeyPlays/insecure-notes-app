@@ -6,6 +6,7 @@
 
     <div class="control">
       <input type="text" placeholder="Search" v-model="query" @input="search" />
+      <a href="/login" @click="logout">Logout</a>
     </div>
     <NoteModel
       v-on:delete-note="deleteNote"
@@ -41,6 +42,9 @@ export default defineComponent({
     };
   },
   methods: {
+    logout() {
+      document.cookie = "user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    },
     getCookie(cname: string) {
       let name = cname + "=";
       let decodedCookie = decodeURIComponent(document.cookie);

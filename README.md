@@ -21,3 +21,40 @@ cd insecure-notes-app
 3. Create a `.env` file in the root directory with the Data from the `.env.sample` file
 4. Run `docker-compose up` in the root directory
 5. Open `http://localhost:8080` in your Browser (Or change the Port to your liking in the `.env` file)
+
+## ⚙️ - Dev Installation
+
+1. Clone the Repository
+
+```bash
+git clone https://github.com/FreakeyPlays/insecure-notes-app.git
+```
+
+2. Install a PostgreSQL Database
+
+3. Navigate to the root directory of the Project
+
+```bash
+cd insecure-notes-app
+```
+
+4. Install the Dependencies of frontend and backend (in the corresponding directories)
+
+```bash
+npm install
+```
+
+5. Create a `.env` file in the backend directory with the Data from the `.env.sample` file and the Data of the installed Database
+6. Start the backend
+
+```bash
+npm run start:dev
+```
+
+7. Start the frontend
+
+```bash
+npm run serve
+```
+
+8. Open `http://localhost:8080` in your Browser

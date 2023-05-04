@@ -17,7 +17,7 @@ The Technology used in this Project is TypeScript, HTML and NestJS.
 cd insecure-notes-app
 ```
 
-2. Install Dependencies of Backend
+2. Install Dependencies of the Backend
 
 ```bash
 cd backend
@@ -27,5 +27,26 @@ npm install
 4. Run the Application
 
 ```bash
-npm run start
+npm run start:dev
+```
+
+## ⚙️ - Backend Installation
+
+1. Navigate to the Project Directory
+
+```bash
+cd insecure-notes-app
+```
+
+2. Install Dependencies of the Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+4. Run the Application
+
+```bash
+npm run serve
 ```

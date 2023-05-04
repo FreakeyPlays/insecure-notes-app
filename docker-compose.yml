@@ -1,0 +1,41 @@
+version: '3'
+services:
+  frontend:
+    image: frontend
+    env_file: ./.env
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.frontend
+    ports:
+      - '${DOCKER_FRONTEND_PORT:-8080}:${NGINX_PORT:-3000}'
+    networks:
+      - note-app
+    restart: unless-stopped
+
+  backend:
+    image: backend
+    env_file: ./.env
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.backend
+    depends_on:
+      - postgres
+    ports:
+      - '${DOCKER_BACKEND_PORT:-8081}:${BACKEND_PORT:-3000}'
+    networks:
+      - note-app
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    ports:
+      - '${DOCKER_POSTGRES_PORT:-35000}:${POSTGRES_PORT:-5432}'
+    env_file:
+      - ./.env
+    networks:
+      - note-app
+    restart: unless-stopped
+
+networks:
+  note-app:
+    driver: bridge

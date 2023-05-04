@@ -9,44 +9,15 @@
 This Insecure notes Application was made in the IT Security course at HS-Esslingen.
 The Technology used in this Project is TypeScript, HTML and NestJS.
 
-## ⚙️ - Backend Installation
+## 🐋 - Docker Installation
 
-1. Navigate to the Project Directory
-
-```bash
-cd insecure-notes-app
-```
-
-2. Install Dependencies of the Backend
-
-```bash
-cd backend
-npm install
-```
-
-4. Run the Application
-
-```bash
-npm run start:dev
-```
-
-## ⚙️ - Backend Installation
-
-1. Navigate to the Project Directory
+1. Install and Start Docker
+2. Navigate to the root directory of the Project
 
 ```bash
 cd insecure-notes-app
 ```
 
-2. Install Dependencies of the Frontend
-
-```bash
-cd frontend
-npm install
-```
-
-4. Run the Application
-
-```bash
-npm run serve
-```
+3. Create a `.env` file in the root directory with the Data from the `.env.sample` file
+4. Run `docker-compose up` in the root directory
+5. Open `http://localhost:8080` in your Browser (Or change the Port to your liking in the `.env` file)

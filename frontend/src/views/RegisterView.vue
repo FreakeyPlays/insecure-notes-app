@@ -11,30 +11,38 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
+
 const handleSubmit = async (e: Event) => {
   e.preventDefault();
   const formData = new FormData(e.target as HTMLFormElement);
 
-  const res = await fetch("http://localhost:8081/user/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: formData.get("email"),
-      password: formData.get("password"),
-      name: formData.get("name"),
-    }),
-  });
-  const data = await res.json();
+  try {
+    const res = await fetch("http://localhost:8081/user/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+        name: formData.get("name"),
+      }),
+    });
+    const data = await res.json();
 
-  if (data.id > 0) {
-    document.cookie = `user=${data}`;
+    if (!("id" in data)) {
+      throw Error("Something went wrong");
+    }
+
+    document.cookie = `user=${JSON.stringify(data)}`;
     window.location.href = "/";
+  } catch (e) {
+    console.error(e);
   }
 };
 
-export default {
+export default defineComponent({
   name: "RegisterView",
   components: {},
   data() {
@@ -42,7 +50,7 @@ export default {
       handleSubmit,
     };
   },
-};
+});
 </script>
 
 <style>

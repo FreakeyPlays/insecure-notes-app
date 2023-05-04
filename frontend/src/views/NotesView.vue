@@ -1,78 +1,167 @@
 <template>
   <div class="notes">
-    <h1>Notes</h1>
+    <h1>
+      Notes<span v-if="query"> - <span v-html="query"></span></span>
+    </h1>
+
     <div class="control">
-      <button>Add Note</button>
-      <input type="text" placeholder="Search" />
+      <input type="text" placeholder="Search" v-model="query" @input="search" />
     </div>
-    <div class="note" v-for="note in notes" :key="note.id">
-      <h2>{{ note.title }}</h2>
-      <p>{{ note.text }}</p>
-      <div class="note_control">
-        <button>Delete</button>
-        <button>Edit</button>
-      </div>
-    </div>
+    <NoteModel
+      v-on:delete-note="deleteNote"
+      v-on:update-note="updateNote"
+      v-for="note in filteredNotes"
+      :key="note.id"
+      :note="note"
+    />
+    <CreateNote
+      v-on:create-note="createNote"
+      :userId="getLoggedInUser('user').id"
+    />
   </div>
 </template>
 
 <script lang="ts">
-const notes: Array<undefined> = [];
+import { defineComponent } from "vue";
+import NoteModel from "../components/noteModel.vue";
+import CreateNote from "../components/createNote.vue";
 
-export default {
+export default defineComponent({
   name: "NotesView",
-  components: {},
+  components: { NoteModel, CreateNote },
   data() {
     return {
-      notes,
+      notes: new Object() as { id: number; title: string; text: string }[],
+      filteredNotes: new Object() as {
+        id: number;
+        title: string;
+        text: string;
+      }[],
+      query: "",
     };
   },
-  // methods: {
-  //   async getData() {
-  //     const res = await fetch("http://localhost:8081/note/user/" + 3);
-  //     const data = await res.json();
-  //     this.notes = data;
-  //   },
-  // },
-  // mounted() {
-  //   this.getData();
-  // },
-};
+  methods: {
+    getCookie(cname: string) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
+    getLoggedInUser(name: string) {
+      const cookie = this.getCookie(name);
+      const user = JSON.parse(cookie);
+      return user;
+    },
+    async createNote(newNote: { id: number; title: string; text: string }) {
+      try {
+        const res = await fetch(`http://localhost:8081/note`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newNote),
+        });
+        const data = await res.json();
+
+        this.notes.push(data);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    deleteNote(id: number) {
+      try {
+        fetch(`http://localhost:8081/note/${id}`, {
+          method: "DELETE",
+        });
+
+        this.notes.splice(
+          this.notes.findIndex((note) => note.id === id),
+          1
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    updateNote(update: { id: number; title: string; text: string }) {
+      try {
+        fetch(`http://localhost:8081/note`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(update),
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    search(e: Event | undefined) {
+      if (e) {
+        this.query = (e.target as HTMLInputElement).value;
+      }
+
+      var newurl =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname +
+        "?search=" +
+        this.query;
+      window.history.pushState({ path: newurl }, "", newurl);
+
+      if (this.query && this.query !== "") {
+        this.filteredNotes = this.notes.filter((note) => {
+          return (
+            note.title.toLowerCase().includes(this.query.toLowerCase()) ||
+            note.text.toLowerCase().includes(this.query.toLowerCase())
+          );
+        });
+      } else {
+        this.filteredNotes = this.notes;
+      }
+    },
+  },
+  async mounted() {
+    if (!document.cookie.includes("user")) {
+      window.location.href = "/login";
+    }
+
+    if (this.$route.query.search) {
+      this.query = this.$route.query.search as string;
+      this.search(undefined);
+      // <img src=1 href=1 onerror="javascript:alert(document.cookie)"></img>
+    }
+
+    try {
+      const user = this.getLoggedInUser("user");
+
+      if (!("id" in user)) {
+        throw Error("Invalid user");
+      }
+
+      const res = await fetch(`http://localhost:8081/note/user/${user.id}`);
+      const data = await res.json();
+      this.notes = data;
+      this.filteredNotes = this.notes;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+});
 </script>
 
 <style>
 .notes {
   padding: 16px;
-}
-
-.note {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 16px;
-  margin: 8px 0;
-}
-
-.note h2 {
-  margin-bottom: 8px;
-}
-
-.note p {
-  margin-bottom: 8px;
-}
-
-.note_control {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.note_control button {
-  height: 32px;
-  width: 128px;
-  border-radius: 4px;
-  background-color: #000;
-  color: #fff;
-  cursor: pointer;
 }
 
 .control {

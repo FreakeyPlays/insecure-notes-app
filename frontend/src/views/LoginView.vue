@@ -10,25 +10,37 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
+
 const handleSubmit = async (e: Event) => {
   e.preventDefault();
   const formData = new FormData(e.target as HTMLFormElement);
-  console.log(formData.get("email"));
-  const res = await fetch("http://localhost:8081/user/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: formData.get("email"),
-      password: formData.get("password"),
-    }),
-  });
-  const data = await res.json();
-  console.log(data);
+
+  try {
+    const res = await fetch("http://localhost:8081/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+    const data = await res.json();
+
+    if (!("id" in data)) {
+      throw Error("Invalid credentials");
+    }
+
+    document.cookie = `user=${JSON.stringify(data)}`;
+    window.location.href = "/";
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-export default {
+export default defineComponent({
   name: "LoginView",
   components: {},
   data() {
@@ -36,7 +48,7 @@ export default {
       handleSubmit,
     };
   },
-};
+});
 </script>
 
 <style>

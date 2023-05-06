@@ -7,7 +7,16 @@
 ## 📌 - Description
 
 This Insecure notes Application was made in the IT Security course at HS-Esslingen.
-The Technology used in this Project is TypeScript, HTML and NestJS.
+The Technology used in this Project is VueJS, NestJS and PostgresSQL.
+
+This project sets up a Basic frontend with a Login and Register Page and a Notes Page.
+The Backend has endpoints for all CRUD operations for the Notes and the Users.
+To get a overview of the API you can have a look in the `*.controller.ts` files in the backend directory.
+The Database will be empty on first start, but you can create a User via the SignUp Page.
+
+**⚠️ Warning:** This Project is a insecure Application and should not be used in Production.
+All Insecurities are inserted on purpose to learn how to avoid them.
+This Project is only for educational purposes.
 
 ## 🐋 - Docker Installation
 
